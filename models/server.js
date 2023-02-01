@@ -1,11 +1,14 @@
 
 const express = require('express');
+const cors  = require('cors');
 class Server{
     constructor()
     {
         this.app = express();
         this.port = process.env.PORT;
-        
+        this.usuariosPath = '/api/usuarios';
+
+
         //Middlewares
         //Los middlewares son funciones
         //que se ejecutan cuando se lanze el 
@@ -17,43 +20,19 @@ class Server{
     }
     middlewares()
     {
+        //CORS
+        this.app.use(cors());
+        
+        //Lectura y parseo del body
+        this.app.use(express.json());
+
         //Directorio publico
        this.app.use(express.static('public')); 
     }
     routes()
     {
-        this.app.get('/api', (req, res) => {
-            // res.send('Hello World!')
-            res.json({
-                msg:"get api"
-            });
-        });
-        this.app.put('/api', (req, res) => {
-            // res.send('Hello World!')
-            res.json({
-                msg:"put api"
-            });
-        });
-        this.app.post('/api', (req, res) => {
-            // res.send('Hello World!')
-            res.json({
-                msg:"post api"
-            });
-        });
-        this.app.delete('/api', (req, res) => {
-            // res.send('Hello World!')
-            res.json({
-                msg:"delete api"
-            });
-        });
-        this.app.patch('/api', (req, res) => {
-            // res.send('Hello World!')
-            res.json({
-                msg:"patch api"
-            });
-        });
+        this.app.use(this.usuariosPath,require("../routes/usuarios"));
     }
-
     listen()
     {
         this.app.listen(this.port, () => {
