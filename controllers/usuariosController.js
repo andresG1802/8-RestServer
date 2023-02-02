@@ -1,5 +1,8 @@
 //esto se hace para que reconozca a res 
 const {request,response } = require('express');
+const bcryptjs = require('bcryptjs');
+
+const Usuario = require('../models/usuarios');
 
 
 const usuariosGet = (req, res = response) => {
@@ -19,14 +22,32 @@ const usuariosPut = (req=request, res=response) => {
         limit
     });
 }
-const usuariosPost = (req,res) =>{
+const usuariosPost = async(req,res=response) =>{
+  
+    // Esta destructuracion 
+    //sirve para los datos que deseas
+    const {nombre,correo,password,rol} = req.body;
+    
+    const usuario = new Usuario({nombre,correo,password,rol});
+    
+    //Verficar si el correo existe
+    const existeEmail = await Usuario.findOne({correo});
+    if( existeEmail)
+    {
+        return res.status(400).json({
+            msg:'El correo ya esta registrado'
+        });
+    }
 
-    const {nombre,Edad} = req.body;
+    //Encriptar la contraseña
+    const salt = bcryptjs.genSaltSync(10);
+    usuario.password = bcryptjs.hashSync(password,salt);
 
+    //Grabar en DB
+    await usuario.save();
     res.json({
         msg:"post api - controlador",
-        nombre,
-        Edad
+        usuario
     });
 
 }
