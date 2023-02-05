@@ -1,7 +1,12 @@
 const {Router}  = require('express');
 const { check } = require('express-validator');
 const Roles = require('../models/roles');
-const { validarCampos } = require('../middlewares/validar-vampos');
+const {
+    validarCampos,
+    validarJWT,
+    esAdminRole,
+    tieneRole
+} = require('../middlewares')
 
 const { usuariosGet ,
     usuariosPut ,
@@ -9,8 +14,7 @@ const { usuariosGet ,
     usuariosDelete,
     usuariosPatch} = require('../controllers/usuariosController');
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
-const { validarJWT } = require('../middlewares/validar-jwt');
-const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
+
 const router = new Router();
 
 router.get('/', usuariosGet);
