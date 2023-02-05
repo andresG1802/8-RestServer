@@ -3,6 +3,7 @@ const {request,response } = require('express');
 const bcryptjs = require('bcryptjs');
 
 const Usuario = require('../models/usuarios');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 
 const usuariosGet = async(req, res = response) => {
@@ -83,16 +84,20 @@ const usuariosPost = async(req,res=response) =>{
     });
 
 }
-const usuariosDelete = async(req, res) => {
+const usuariosDelete = async(req=request, res=response) => {
     
     const { id } = req.params;
-
-    const uid = req.uid;
     // Fisicamnete lo borramos 
-
-    const usuario = await Usuario.findByIdAndDelete(id);
-    
-    res.json({usuario,uid});
+    //Usuario antes de ser actualizado
+    // const usuarioAutenticado = await Usuario.findById(id);
+    //el {new:true} sirve para poder ver el objeto actualizado
+    const usuario = await Usuario.findByIdAndUpdate(id,{estado: false},{new:true});
+    //req.usuario es global es todos los archivo????????
+    const usuarioAutenticado = req.usuario;
+    res.json({
+        usuario,
+        usuarioAutenticado
+    });
 }
 const usuariosPatch = (req, res) => {
     // res.send('Hello World!')
