@@ -20,7 +20,9 @@ const UsuarioSchema= Schema({
     rol:{
         type:String,
         required: true,
-        enum: ['ADMIN_ROLE','USER_ROLE']
+        enum: ['ADMIN_ROLE','USER_ROLE'],
+        //Para que el token no de error
+        default:'USER_ROLE'
     },
     estado: {
         type: Boolean,

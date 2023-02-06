@@ -61,24 +61,85 @@ const login = async(req,res)=>{
 const googleSignIn = async(req,res=response)=>{
 
     const {id_token} = req.body;
-    try{
+    // try{
         
-        const {nombre,img,correo} = await googleVerify(id_token);
+    //     const {nombre,img,correo} = await googleVerify(id_token);
+        
+    //     
+    //     if(!usuario)
+    //     {
+    //         //Tengo que crearlo
+    //         const data = {
+    //             nombre,
+    //             correo,
+    //             password:':P',
+    //             img,
+    //             google : true
+    //         };
+
+    //         usuario = new Usuario(data);
+            
+    //         //Guardamos en db
+    //         await usuario.save();
+    //     }
+    //     // Si el usuario en DB 
+    //     if(!usuario.estado)
+    //     {
+    //         return res.status(401).json({
+    //             msg:"Hable con el administrador, usuario bloqueado"
+    //         });
+    //     }
+
+    //     const token = await generarJWT(usuario.id);
+    //     res.json({
+    //         usuario,
+    //         token
+    //     });
+
+    // }catch(error){
+    //     res.status(400).json({
+    //         ok:false,
+    //         msg: ' El Token no se pudo verificar'
+    //     });
+    // }
+    try{
+        const {correo,img,nombre} = await googleVerify(id_token);
+
+        let usuario = await Usuario.findOne({correo});
+        if(!usuario)
+        {
+            const data = {
+                nombre,
+                correo,
+                password:':P',
+                img,
+                google: true
+            }
+            //Suave con construir objetos chequea los atributos y el default
+            usuario = new Usuario(data);
+            await usuario.save();
+        }
+
+        if(!usuario.estado)
+        {
+            return res.status(401).json({
+                msg:"Hable con el administrador, usuario bloqueado"
+            });
+        }
+        const token = await generarJWT(usuario.id);
         
         res.json({
-            msg:"Todo bien!",
-            id_token
+           usuario,
+           token
         });
-
-    }catch(error){
-        json.status(400).json({
-            ok:false,
-            msg: ' El Token no se pudo verificar'
-        })
+    }catch(error)
+    {
+        res.status(400).json({
+            
+            msg:'El token no se pudo verificar'
+        });
     }
     
-
-
 }
 
 module.exports = {
