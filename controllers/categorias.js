@@ -6,7 +6,7 @@ const crearCategoria = async(req=request,res=response)=>{
 
     const nombre = req.body.nombre.toUpperCase();
 
-    const categoriaDB = await Categoria.finOne({nombre});
+    const categoriaDB = await Categoria.findOne({nombre});
 
 
     if(categoriaDB)
