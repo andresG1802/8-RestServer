@@ -1,7 +1,7 @@
 const {Schema,model} = require('mongoose');
 
 
-const CategoriaSchema = Shema({
+const CategoriaSchema = Schema({
     nombre:{
 
         type:String,
