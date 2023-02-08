@@ -14,7 +14,7 @@ const validarJWT = async(req=response,res=request, next)=>{
         })
     }   
     try{
-
+        //Las escriptaciones correctas estan en el login
         const {uid} = jwt.verify(token,process.env.SECRETORPRIVATEKEY);
         const usuario = await Usuario.findById(uid);
         
@@ -30,7 +30,6 @@ const validarJWT = async(req=response,res=request, next)=>{
                 msg:"Token no valido - usuario con estado: false"
             })
         }
-
         req.usuario = usuario;
         next();
     }catch(error)

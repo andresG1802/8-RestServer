@@ -69,6 +69,7 @@ const googleSignIn = async(req,res=response)=>{
             msg:"Todo bien!",
             id_token
         });
+        console.log(id_token);
 
     }catch(error){
         json.status(400).json({
