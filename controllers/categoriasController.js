@@ -38,19 +38,20 @@ const getCategoria = async(req,res = response)=>{
     const [total,categorias]=await Promise.all([
         Categoria.countDocuments(query),
         Categoria.find(query)
-        .skip(Number(desde))
-        .limit(Number(limite))
+            .populate('usuario','nombre')
+            .skip(Number(desde))
+            .limit(Number(limite))
     ]);
     res.json({
         total,
         categorias
-    })
+    });
 }
 const getIdCategoria = async(req,res = response)=>{
 
-    const {id} = req.body;
+    const {id} = req.params;
     
-    const categoria = await Categoria.findById(id);
+    const categoria = await Categoria.findById(id).populate('usuario','nombre');
     res.json({
         categoria
     });
@@ -61,9 +62,13 @@ const putCategoria  = async(req=request,res=response)=>{
 
     // const {id} = req.params;
     const {id,nombre}=req.body;
+    const{ estado,usuario,...data} = req.body;
 
-    const categoria = await Categoria.findByIdAndUpdate(id,{nombre},{new:true});
-
+    data.nombre = data.nombre.toUpperCase();
+    data.usuario = req.usuario._id;
+    
+    const categoria = await Categoria.findByIdAndUpdate(id,data,{new:true});
+    
     res.json({
         categoria    
     });
@@ -71,7 +76,7 @@ const putCategoria  = async(req=request,res=response)=>{
 
 const deleteCategoria = async(req=request,res=response)=>{
 
-    const {id} = req.body;
+    const {id} = req.params;
     const categoriaEliminada =  await Categoria.findByIdAndUpdate(id,{estado:false},{new:true});
     res.json({
         msg:"Categoria eliminada: ",
