@@ -35,9 +35,18 @@ const existeCategoria = async(id)=>{
     }
 
 }
+const existeProducto = async(id)=>{
+    const existeProducto = await Producto.findById(id);
+    
+    if(!existeProducto)
+    {
+        throw new Error(`El id no existe ${ id }`);
+    }
+}
 module.exports = {
     esRoleValido,
     emailExiste,
     existeUsuarioPorId,
-    existeCategoria
+    existeCategoria,
+    existeProducto
 }

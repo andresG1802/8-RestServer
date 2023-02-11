@@ -5,7 +5,7 @@ const {check} = require('express-validator');
 const { crearCategoria,getCategoria, deleteCategoria, putCategoria, getIdCategoria} = require('../controllers/categoriasController');
 const { existeCategoria } = require('../helpers/db-validators');
 const { validarJWT } = require('../middlewares');
-const { validarCampos } = require('../middlewares/validar-vampos');
+const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = new Router();
 
