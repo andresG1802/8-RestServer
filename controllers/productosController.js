@@ -6,19 +6,20 @@ const{Producto} = require('../models/index');
 
 const crearProducto = async(req=request,res=response)=>{
 
-    const nombre = req.body.nombre.toUpperCase();
+    const {estado,usuario,...body} = req.body;
 
     //Encontramos uno con el nombre
-    const productoDB = await Producto.findOne({nombre});
+    const productoDB = await Producto.findOne({nombre:body.nombre});
     if(productoDB)
     {
         return res.status(400).json({
-            msg:`La producto ${productoDB.nombre}, ya existe`
+            msg:`El producto ${productoDB.nombre}, ya existe`
         });
     }
 
     const data = {
-        nombre,
+        ...body,
+        nombre:body.nombre.toUpperCase(),
         usuario:req.usuario._id
     }
     
@@ -38,6 +39,7 @@ const getProducto = async(req,res=response)=>{
         Producto.countDocuments(query),
         Producto.find(query)
             .populate('usuario','nombre')
+            .populate('categoria','nombre')
             .skip(Number(desde))
             .limit(Number(limite))
     ]);
@@ -58,7 +60,7 @@ const getIdProducto = async(req,res = response)=>{
 
 }
 const putProducto = async(req = request,res=response)=>{
-    const {id,nombre} = req.body;
+    const {id} = req.body;
 
     const{estado,usuario,...data} = req.body;
     
@@ -66,7 +68,7 @@ const putProducto = async(req = request,res=response)=>{
     data.usuario = req.usuario._id;
     const producto = await Producto.findByIdAndUpdate(id,data,{new:true});
     res.json({
-        categoria
+        producto
     });
 }
 const deleteProducto = async(req=request,res=response)=>{

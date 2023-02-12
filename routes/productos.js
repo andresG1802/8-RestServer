@@ -1,23 +1,25 @@
 const{Router} = require('express');
 
 const {check} = require('express-validator');
-const { crearProducto, putProducto, deleteProducto, getIdProducto } = require('../controllers/productosController');
-const { existeCategoria, existeProducto } = require('../helpers/db-validators');
+const { crearProducto, putProducto, deleteProducto, getIdProducto, getProducto } = require('../controllers/productosController');
+const {  existeProducto, existeCategoria, existeCategoriaPorId } = require('../helpers/db-validators');
 const { validarJWT } = require('../middlewares');
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = new Router();
 
 
-router.get('/');
+router.get('/',[validarJWT],getProducto);
 router.get('/:id',[
     validarJWT,
     check('id','El id ingresado es incorrecto').custom(existeProducto),
+    check('categoria','No es un id de Mongo').isMongoId(),
+    check('categoria').custom(existeCategoriaPorId),
     validarCampos
-],getIdProducto)
-router.post('/'[
+],getIdProducto);
+router.post('/',[
     validarJWT,
-    check('nombre','El nombre es obligatorio').not.isEmpty(),
+    check('nombre','El nombre es obligatorio').not().isEmpty(),
     validarCampos
 ],crearProducto);
 
