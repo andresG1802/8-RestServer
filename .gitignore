@@ -4,3 +4,5 @@ node_modules/
 
 
 .env
+# uploads/
+# para solo borrar archivos de una sola extension uploads/**.jpg o tambien uploads/usuarios/**.*
